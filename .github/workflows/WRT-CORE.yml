@@ -259,24 +259,15 @@ jobs:
           tag_name: ${{env.CI_NAME}}-${{env.WRT_CONFIG}}_${{env.WRT_DATE}}
           files: ./wrt/upload/*.*
           body: |
-            这是个平台固件包，内含多个设备！
-            请注意选择你需要的设备固件！
-            不要问，刷就完事了！
+            🎯 Bespoke DaeWRT 高性能定制固件
 
-            全系带开源硬件加速，别问了！
+            本固件专为 【京东云亚瑟 (RE-SS-01) 物理扩容 1G 内存版】 深度专属定制构建：
+            * 🚀 核心更替：全面接入 kenzok8 / daede 纯净远程大底，底层享用原生 SIMD 汇编加速
+            * 🧊 极致冷酷：底层有线纯主路由模式（NOWIFI），无用无线组件与硬件树彻底断电剥离
+            * 💎 纯正血统：公网神仙组件 Lucky 回归 gdy666 官方原版，规则集改走 sbwml 高质量远程源
+            * ⚡ NSS 加速：全线解除 1G 内存封印，NSS 硬件转发缓冲区深度扩容
 
-            源码：${{env.WRT_REPO}}
-            分支：${{env.WRT_BRANCH}}
-            提交：${{env.WRT_HASH}}
-
-            配置：${{env.WRT_CONFIG}}
-            平台：${{env.WRT_TARGET}}
-
-            登录地址：${{env.WRT_IP}}
-            登录密码：${{env.WRT_PW}}
-
-            WIFI名称：${{env.WRT_SSID}}
-            WIFI密码：${{env.WRT_WORD}}
-
-            内核版本：${{env.WRT_KVER}}
-            插件列表：${{env.WRT_LIST}}
+            源码：${{env.WRT_REPO}} [${{env.WRT_BRANCH}}]
+            内核：${{env.WRT_KVER}}
+            
+            后台：${{env.WRT_IP}} (默认密码：无)
