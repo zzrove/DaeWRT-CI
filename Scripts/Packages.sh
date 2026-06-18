@@ -56,7 +56,6 @@ UPDATE_PACKAGE "momo" "nikkinikki-org/OpenWrt-momo" "main"
 UPDATE_PACKAGE "nikki" "nikkinikki-org/OpenWrt-nikki" "main"
 
 # 3. 核心更替：接入 kenzok8 的 daede 全家桶（包含 dae核心、daed核心、luci-app-daede面板）
-# 🔥 核心补充：在第5个参数传入 "dae daed"，强制清理官方 feeds 里的旧核心，防止同名撞车！
 UPDATE_PACKAGE "openwrt-daede" "kenzok8/openwrt-daede" "main" "name" "dae daed"
 
 # 4. 常用工具与扩展组件
@@ -76,9 +75,12 @@ UPDATE_PACKAGE "mosdns" "sbwml/luci-app-mosdns" "v5" "" "v2dat"
 UPDATE_PACKAGE "qbittorrent" "sbwml/luci-app-qbittorrent" "master" "" "qt6base qt6tools rblibtorrent"
 UPDATE_PACKAGE "viking" "VIKINGYFY/packages" "main" "" "luci-app-timewol luci-app-wolplus"
 UPDATE_PACKAGE "luci-app-pushbot" "zzsj0928/luci-app-pushbot" "master"
-UPDATE_PACKAGE "luci-app-lucky" "sirpdboy/luci-app-lucky" "main"
 
-# 6. 远程拉取独立的高质量 Geodata 数据包组件，完美接管规则依赖
+# 🔥【全新修改】：切除第三方移植，完美引入 gdy666 官方原版 Lucky 大打包仓库
+# 使用 "name" 将本地解压目录强制规范命名为 "lucky"，确保核心与 LuCI 依赖链天然对齐
+UPDATE_PACKAGE "lucky" "gdy666/luci-app-lucky" "main" "name"
+
+# 6. 远程拉取独立的高质量 Geodata 数据包组件，全面接管规则依赖
 UPDATE_PACKAGE "v2ray-geodata" "sbwml/v2ray-geodata" "master"
 
 
