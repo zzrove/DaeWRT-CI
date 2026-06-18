@@ -5,8 +5,8 @@ CONFIG_TARGET_qualcommax_ipq60xx=y
 # CONFIG_TARGET_MULTI_PROFILE is not set
 # CONFIG_TARGET_PER_DEVICE_ROOTFS is not set
 
-# 设备列表：专攻京东云亚瑟
-CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_jdcloud_re-ss-01=y
+# 确保开头带有 _DEVICE_，完美喂饱 WRT-CORE 的正则提取器
+CONFIG_TARGET_DEVICE_qualcommax_ipq60xx_DEVICE_jdcloud_re-ss-01=y
 
 # 内核基础高级配置（喂饱 eBPF / 容器环境）
 CONFIG_KERNEL_ARM_PMU=y
