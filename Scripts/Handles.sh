@@ -2,7 +2,9 @@
 
 PKG_PATH="$GITHUB_WORKSPACE/$WRT_DIR/package/"
 
-#预置HomeProxy数据
+# =================================================================
+# 1. 预置 HomeProxy 数据
+# =================================================================
 if [ -d *"homeproxy"* ]; then
 	echo " "
 
@@ -21,21 +23,27 @@ if [ -d *"homeproxy"* ]; then
 
 	cd .. && rm -rf ./$HP_RULE/
 
-	cd $PKG_PATH && echo "homeproxy date has been updated!"
+	cd $PKG_PATH && echo "homeproxy data has been updated!"
 fi
 
-#修改argon主题字体和颜色
+# =================================================================
+# 2. 修改 Argon 主题配置
+# =================================================================
 if [ -d *"luci-theme-argon"* ]; then
 	echo " "
 
 	cd ./luci-theme-argon/
 
-	sed -i "s/primary '.*'/primary '#31a1a1'/; s/'0.2'/'0.5'/; s/'none'/'bing'/; s/'600'/'normal'/" ./luci-app-argon-config/root/etc/config/argon
+	# 🎯 核心修改：移除所有 custom teal (#31a1a1) 颜色及透明度魔改
+	# 仅保留将背景切换为 Bing 每日壁纸的逻辑，完美回归官方原版经典蓝紫血统
+	sed -i "s/'none'/'bing'/g" ./luci-app-argon-config/root/etc/config/argon
 
-	cd $PKG_PATH && echo "theme-argon has been fixed!"
+	cd $PKG_PATH && echo "theme-argon official defaults with Bing wallpaper fixed!"
 fi
 
-#修改aurora菜单式样
+# =================================================================
+# 3. 修改 Aurora 菜单式样
+# =================================================================
 if [ -d *"luci-app-aurora-config"* ]; then
 	echo " "
 
@@ -46,17 +54,18 @@ if [ -d *"luci-app-aurora-config"* ]; then
 	cd $PKG_PATH && echo "theme-aurora has been fixed!"
 fi
 
-#修改qca-nss-drv启动顺序
+# =================================================================
+# 4. 高通 NSS 驱动启动顺序及内核调优
+# =================================================================
 NSS_DRV="../feeds/nss_packages/qca-nss-drv/files/qca-nss-drv.init"
 if [ -f "$NSS_DRV" ]; then
 	echo " "
 
 	sed -i 's/START=.*/START=85/g' $NSS_DRV
 
-	cd $PKG_PATH && echo "qca-nss-drv has been fixed!"
+	cd $PKG_PATH && echo "qca-nss-drv boot order optimized!"
 fi
 
-#修改qca-nss-pbuf启动顺序
 NSS_PBUF="./kernel/mac80211/files/qca-nss-pbuf.init"
 if [ -f "$NSS_PBUF" ]; then
 	echo " "
@@ -66,7 +75,10 @@ if [ -f "$NSS_PBUF" ]; then
 	cd $PKG_PATH && echo "qca-nss-pbuf has been fixed!"
 fi
 
-#修复TailScale配置文件冲突
+# =================================================================
+# 5. 编译依赖与环境排雷补丁
+# =================================================================
+# 修复 TailScale 配置文件冲突
 TS_FILE=$(find ../feeds/packages/ -maxdepth 3 -type f -wholename "*/tailscale/Makefile")
 if [ -f "$TS_FILE" ]; then
 	echo " "
@@ -76,27 +88,27 @@ if [ -f "$TS_FILE" ]; then
 	cd $PKG_PATH && echo "tailscale has been fixed!"
 fi
 
-#修复Rust编译失败
+# 修复 Rust 编译导致虚拟机磁盘爆满失败的问题
 RUST_FILE=$(find ../feeds/packages/ -maxdepth 3 -type f -wholename "*/rust/Makefile")
 if [ -f "$RUST_FILE" ]; then
 	echo " "
 
 	sed -i 's/ci-llvm=true/ci-llvm=false/g' $RUST_FILE
 
-	cd $PKG_PATH && echo "rust has been fixed!"
+	cd $PKG_PATH && echo "rust LLVM compilation storage saver applied!"
 fi
 
-#修复DiskMan编译失败
+# 修复 DiskMan 在新内核下的 NTFS 依赖报错
 DM_FILE="./luci-app-diskman/applications/luci-app-diskman/Makefile"
 if [ -f "$DM_FILE" ]; then
 	echo " "
 
 	sed -i '/ntfs-3g-utils /d' $DM_FILE
 
-	cd $PKG_PATH && echo "diskman has been fixed!"
+	cd $PKG_PATH && echo "diskman ntfs dependency fixed!"
 fi
 
-#修复luci-app-netspeedtest相关问题
+# 修复 luci-app-netspeedtest 相关问题
 if [ -d *"luci-app-netspeedtest"* ]; then
 	echo " "
 
