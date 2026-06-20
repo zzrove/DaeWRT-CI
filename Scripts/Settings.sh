@@ -1,13 +1,17 @@
 #!/bin/bash
 . $(dirname "$(realpath "$0")")/function.sh
 
+# =================================================================
 # 1. 基础个性化去中心定制
+# =================================================================
 sed -i "/attendedsysupgrade/d" $(find ./feeds/luci/collections/ -type f -name "Makefile")
 sed -i "s/luci-theme-bootstrap/luci-theme-$WRT_THEME/g" $(find ./feeds/luci/collections/ -type f -name "Makefile")
 sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" $(find ./feeds/luci/modules/luci-mod-system/ -type f -name "flash.js")
 sed -i "s/(\(luciversion || ''\))/(\1) + (' \/ DaeWRT-$WRT_DATE')/g" $(find ./feeds/luci/modules/luci-mod-status/ -type f -name "10_system.js")
 
+# =================================================================
 # 2. 无线基准国标对齐
+# =================================================================
 WIFI_SH=$(find ./target/linux/{mediatek/filogic,qualcommax}/base-files/etc/uci-defaults/ -type f -name "*set-wireless.sh" 2>/dev/null)
 WIFI_UC="./package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc"
 if [ -f "$WIFI_SH" ]; then
@@ -20,12 +24,22 @@ elif [ -f "$WIFI_UC" ]; then
 	sed -i "s/encryption='.*'/encryption='psk2+ccmp'/g" $WIFI_UC
 fi
 
+# =================================================================
 # 3. 核心网关配置注入
+# =================================================================
 CFG_FILE="./package/base-files/files/bin/config_generate"
-sed -i "s/s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" $CFG_FILE
-sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" $CFG_FILE
+if [ -f "$CFG_FILE" ]; then
+	# 🎯 核心修正：修复多打的 s/ 字符，恢复完美替换逻辑
+	sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" $CFG_FILE
+	sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" $CFG_FILE
+fi
 
+# 🎯 强力兜底：深度扫描可能残留 hardcode 默认网段的自带魔改脚本（防止第三方 default-settings 篡改 IP）
+find ./package/ -type f -name "*default-settings*" -exec sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" {} + 2>/dev/null
+
+# =================================================================
 # 4. 编译冲突与镜像源防御性修复
+# =================================================================
 vlmcsd_patches="./feeds/packages/net/vlmcsd/patches/"
 mkdir -p $vlmcsd_patches && cp -f ../patches/001-fix_compile_with_ccache.patch $vlmcsd_patches
 
@@ -33,7 +47,9 @@ if [ -f "./package/emortal/default-settings/files/99-default-settings-chinese" ]
 	sed -i 's/mirrors.vsean.net\/openwrt/mirror.nju.edu.cn\/immortalwrt/g' ./package/emortal/default-settings/files/99-default-settings-chinese
 fi
 
+# =================================================================
 # 5. 自动追加基础结构到种子文件
+# =================================================================
 echo "CONFIG_PACKAGE_luci=y" >> ./.config
 echo "CONFIG_LUCI_LANG_zh_Hans=y" >> ./.config
 echo "CONFIG_PACKAGE_luci-theme-$WRT_THEME=y" >> ./.config
@@ -59,7 +75,7 @@ if [[ "${WRT_TARGET^^}" == *"QUALCOMMAX"* ]]; then
 		echo "CONFIG_NSS_FIRMWARE_VERSION_12_5=y" >> ./.config
 	fi
 
-	# 🚨【核心Bug修复】：加上文件存在性断路器，完美兼容没有 nowifi.dtsi 的纯净 LiBwrt 大底
+	# 加上文件存在性断路器，完美兼容没有 nowifi.dtsi 的纯净 LiBwrt 大底
 	if [[ "${WRT_CONFIG,,}" == *"wifi"* && "${WRT_CONFIG,,}" == *"no"* ]]; then
 		if [ -f "${DTS_PATH}ipq6018-nowifi.dtsi" ] || [ -f "${DTS_PATH}ipq8074-nowifi.dtsi" ]; then
 			find $DTS_PATH -type f ! -iname '*nowifi*' -exec sed -i 's/ipq\(6018\|8074\).dtsi/ipq\1-nowifi.dtsi/g' {} +
