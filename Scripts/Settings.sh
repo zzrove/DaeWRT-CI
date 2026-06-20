@@ -9,6 +9,11 @@ sed -i "s/luci-theme-bootstrap/luci-theme-$WRT_THEME/g" $(find ./feeds/luci/coll
 sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" $(find ./feeds/luci/modules/luci-mod-system/ -type f -name "flash.js")
 sed -i "s/(\(luciversion || ''\))/(\1) + (' \/ DaeWRT-$WRT_DATE')/g" $(find ./feeds/luci/modules/luci-mod-status/ -type f -name "10_system.js")
 
+# 🎯【全新补充】：双层防御，彻底斩杀空密码/未设置密码的黄色大横幅提示
+sed -i 's/L.env.blank_password/false/g' $(find ./feeds/luci/ -type f -name "*.js")
+sed -i 's/blank_password: true/blank_password: false/g' $(find ./feeds/luci/ -type f -name "*.ut" -o -name "*.htm") 2>/dev/null
+
+
 # =================================================================
 # 2. 无线基准国标对齐
 # =================================================================
