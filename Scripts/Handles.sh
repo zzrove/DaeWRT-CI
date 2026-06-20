@@ -104,3 +104,16 @@ if [ -d *"luci-app-netspeedtest"* ]; then
 
 	cd $PKG_PATH && echo "netspeedtest has been fixed!"
 fi
+
+# =================================================================
+# 6. 修复 daed 异常重启导致的 daens 命名空间残留卡死问题
+# =================================================================
+DAED_INIT=$(find ./openwrt-daede/ -type f -wholename "*/daed/files/daed.init" -o -wholename "*/daed/root/etc/init.d/daed" 2>/dev/null)
+if [ -f "$DAED_INIT" ]; then
+	echo " "
+	
+	# 在 daed 启动逻辑 (start_service) 的第一步，强制注入清理旧遗留空间的命令
+	sed -i '/start_service()/a \	ip netns del daens >/dev/null 2>\&1\n\trm -f /var/run/netns/daens >/dev/null 2>\&1' $DAED_INIT
+	
+	cd $PKG_PATH && echo "daed netns ghost residue patch applied successfully!"
+fi
