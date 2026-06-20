@@ -27,22 +27,7 @@ if [ -d *"homeproxy"* ]; then
 fi
 
 # =================================================================
-# 2. 修改 Argon 主题配置
-# =================================================================
-if [ -d *"luci-theme-argon"* ]; then
-	echo " "
-
-	cd ./luci-theme-argon/
-
-	# 🎯 核心修改：移除所有 custom teal (#31a1a1) 颜色及透明度魔改
-	# 仅保留将背景切换为 Bing 每日壁纸的逻辑，完美回归官方原版经典蓝紫血统
-	sed -i "s/'none'/'bing'/g" ./luci-app-argon-config/root/etc/config/argon
-
-	cd $PKG_PATH && echo "theme-argon official defaults with Bing wallpaper fixed!"
-fi
-
-# =================================================================
-# 3. 修改 Aurora 菜单式样
+# 2. 修改 Aurora 菜单式样
 # =================================================================
 if [ -d *"luci-app-aurora-config"* ]; then
 	echo " "
@@ -55,7 +40,7 @@ if [ -d *"luci-app-aurora-config"* ]; then
 fi
 
 # =================================================================
-# 4. 高通 NSS 驱动启动顺序及内核调优
+# 3. 高通 NSS 驱动启动顺序及内核调优
 # =================================================================
 NSS_DRV="../feeds/nss_packages/qca-nss-drv/files/qca-nss-drv.init"
 if [ -f "$NSS_DRV" ]; then
@@ -76,7 +61,7 @@ if [ -f "$NSS_PBUF" ]; then
 fi
 
 # =================================================================
-# 5. 编译依赖与环境排雷补丁
+# 4. 编译依赖与环境排雷补丁
 # =================================================================
 # 修复 TailScale 配置文件冲突
 TS_FILE=$(find ../feeds/packages/ -maxdepth 3 -type f -wholename "*/tailscale/Makefile")
