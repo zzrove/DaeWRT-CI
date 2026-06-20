@@ -44,7 +44,8 @@ UPDATE_PACKAGE() {
 # ==================== 自定义插件远程拉取列表 ====================
 
 # 1. 精美主题系列
-UPDATE_PACKAGE "argon" "sbwml/luci-theme-argon" "openwrt-25.12"
+UPDATE_PACKAGE "argon" "kenzok8/small-package" "main" "pkg"
+
 UPDATE_PACKAGE "aurora" "eamonxg/luci-theme-aurora" "master"
 UPDATE_PACKAGE "aurora-config" "eamonxg/luci-app-aurora-config" "master"
 UPDATE_PACKAGE "kucat" "sirpdboy/luci-theme-kucat" "master"
